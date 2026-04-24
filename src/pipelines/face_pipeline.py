@@ -6,19 +6,23 @@
 # import face_recognition_models
 # from sklearn.svm import SVC
 # from src.database.db import get_all_students
+
 # @st.cache_resource
 # def load_dlib_models():
-
+#     """Load and cache dlib models for face detection and recognition."""
 #     face_detector = dlib.get_frontal_face_detector()
-
+    
+#     # Load shape predictor and face recognition models using face_recognition_models paths
 #     shape_predictor = dlib.shape_predictor(face_recognition_models.pose_predictor_model_location())
-
 #     face_recognition_model = dlib.face_recognition_model_v1(face_recognition_models.face_recognition_model_location())
-
+    
 #     return face_detector, shape_predictor, face_recognition_model
 
 # def get_face_embeddings(image_np):
+#     """Detect faces and generate 128D facial embeddings for each detected face."""
 #     face_detector, shape_predictor, face_recognition_model = load_dlib_models()
+    
+#     # Detect faces in the image
 #     faces = face_detector(image_np, 1)
     
 #     if len(faces) == 0:
@@ -26,14 +30,17 @@
 
 #     encodings = []
 #     for face in faces:
+#         # Get facial landmarks
 #         shape = shape_predictor(image_np, face)
-#         # face_embedding = np.array(face_recognition_model.compute_face_descriptor(image_np, shape))
-#         face_descriptor = face_recognition_model.compute_face_descriptor(image_np, shape, 1)
+        
+#         # Compute face descriptor (embedding) with jittering for better accuracy
+#         face_descriptor = face_recognition_model.compute_face_descriptor(image_np, shape, num_jitters=1)
 #         encodings.append(np.array(face_descriptor))
-#         # encodings.append(face_embedding)
+        
 #     return encodings
 
 # def get_trained_model():
+#     """Fetch student data from DB and prepare the SVM classifier."""
 #     X, y = [], []
 #     student_db = get_all_students()
 
@@ -43,85 +50,78 @@
 #     for student in student_db:
 #         embedding = student.get('face_embedding')
 #         if embedding:
-#             # Supabase se string ya list format mein data aata hai, use numpy array banayein
+#             # Convert stored list/string embedding back to numpy array
 #             X.append(np.array(embedding))
 #             y.append(student.get('student_id'))
 
 #     if len(X) == 0:
 #         return None
     
-#     clf = SVC(kernel="linear", probability=True, class_weight='balanced')
+#     unique_ids = sorted(list(set(y)))
+#     clf = None
 
-#     try:
-#         clf.fit(X,y)
-#     except ValueError:
-#         pass
+#     # SVM requires at least 2 different classes to train
+#     if len(unique_ids) >= 2:
+#         try:
+#             clf = SVC(kernel="linear", probability=True, class_weight='balanced')
+#             clf.fit(X, y)
+#         except Exception as e:
+#             st.error(f"Training failed: {e}")
+#             return None
     
-   
-#     # # Kam se kam 2 classes honi chahiye SVM ke liye
-#     # unique_students = list(set(y))
-#     # clf = None
-#     # if len(unique_students) >= 2:
-#     #     clf = SVC(kernel='linear', probability=True, class_weight='balanced')
-#     #     clf.fit(X, y)
-    
-#     # return {'clf': clf, 'X': X, 'y': y, 'unique_ids': unique_students}
+#     # IMPORTANT: Returning a dictionary containing model and training data
+#     return {
+#         'clf': clf, 
+#         'X': X, 
+#         'y': y, 
+#         'unique_ids': unique_ids
+#     }
 
 # def train_classifier():
+#     """Clear cache and re-train the model."""
 #     st.cache_resource.clear()
 #     model_data = get_trained_model()
 #     return bool(model_data)
 
 # def predict_attendance(class_image_np):
+#     """Match detected faces against the trained database using SVM and Euclidean distance."""
 #     encodings = get_face_embeddings(class_image_np)
 #     detected_students = {}
 #     model_data = get_trained_model()
 
 #     if not model_data or not encodings:
-#         return {}, [], len(encodings), "Model or Faces not found."
+#         return {}, [], len(encodings), "Model or faces not detected."
 
 #     clf = model_data['clf']
 #     X_train = model_data['X']
 #     y_train = model_data['y']
-    
-#     # all_student_ids = model_data['unique_ids']
-#     # eska second tarika likhane ka
-#     all_student_ids = sorted(list(set([y_train])))
+#     all_student_ids = model_data['unique_ids']
 
-#     resemblance_threshold = 0.6 # Jitna kam, utni strict matching
+#     # Threshold for face verification (lower is stricter)
+#     resemblance_threshold = 0.6 
 
 #     for current_encoding in encodings:
 #         predicted_id = None
 
-#         # classes
-#         # if len(all_student_ids) >= 2:
-#         #     predicted_id = int(clf.preedict([encodings])[0])
-
-#         # else:
-#         #     predicted_id = int(all_student_ids[0])
-
-#         # student_embedding = X_train[y_train.index(predicted_id)]
-
-        
-        
-#         # Agar 2 se zyada students hain toh SVM use karein
+#         # Case 1: Multi-class classification using SVM
 #         if clf is not None:
 #             predicted_id = int(clf.predict([current_encoding])[0])
 #         else:
-#             # Agar sirf 1 hi student database mein hai
+#             # Case 2: Single student in database
 #             predicted_id = int(all_student_ids[0])
 
-#         # Distance calculation (Euclidean Distance)
-#         # Train data mein se us student ka pehla embedding nikalein
+#         # Verification Step: Calculate Euclidean Distance from original embedding
+#         # This prevents 'False Positives' (wrongly identifying someone)
 #         match_idx = y_train.index(predicted_id)
 #         trained_embedding = X_train[match_idx]
         
-#         score = np.linalg.norm(trained_embedding - current_encoding)
+#         # Calculate distance (L2 Norm)
+#         distance = np.linalg.norm(trained_embedding - current_encoding)
 
-#         if score <= resemblance_threshold:
+#         if distance <= resemblance_threshold:
 #             detected_students[predicted_id] = True
 
-#     return detected_students, all_student_ids, len(encodings), "Success"
+#     return detected_students, all_student_ids, len(encodings), "Attendance processed successfully."
 
 import dlib
 import streamlit as st
@@ -131,9 +131,10 @@ import face_recognition_models
 from sklearn.svm import SVC
 from src.database.db import get_all_students
 
+
 @st.cache_resource
 def load_dlib_models():
-    """Load and cache dlib models for face detection and recognition."""
+    """Load and cache dlib models."""
     face_detector = dlib.get_frontal_face_detector()
     
     # Load shape predictor and face recognition models using face_recognition_models paths
@@ -142,8 +143,20 @@ def load_dlib_models():
     
     return face_detector, shape_predictor, face_recognition_model
 
+# Ye function face_pipeline.py mein hona chahiye
+def train_classifier():
+    """Clear the cached resource and re-train the model with new data."""
+    try:
+        st.cache_resource.clear() # Purana cached model delete karne ke liye
+        model_data = get_trained_model() # Naya model train karne ke liye
+        return bool(model_data)
+    except Exception as e:
+        print(f"Error during training: {e}")
+        return False
+
+
 def get_face_embeddings(image_np):
-    """Detect faces and generate 128D facial embeddings for each detected face."""
+    """Detect faces and return 128D embeddings."""
     face_detector, shape_predictor, face_recognition_model = load_dlib_models()
     
     # Detect faces in the image
@@ -156,15 +169,14 @@ def get_face_embeddings(image_np):
     for face in faces:
         # Get facial landmarks
         shape = shape_predictor(image_np, face)
-        
-        # Compute face descriptor (embedding) with jittering for better accuracy
+        # num_jitters=1 helps in getting more stable embeddings
         face_descriptor = face_recognition_model.compute_face_descriptor(image_np, shape, num_jitters=1)
         encodings.append(np.array(face_descriptor))
         
     return encodings
 
 def get_trained_model():
-    """Fetch student data from DB and prepare the SVM classifier."""
+    """Train SVM classifier on student data from Database."""
     X, y = [], []
     student_db = get_all_students()
 
@@ -184,7 +196,7 @@ def get_trained_model():
     unique_ids = sorted(list(set(y)))
     clf = None
 
-    # SVM requires at least 2 different classes to train
+    # SVM needs at least 2 distinct students
     if len(unique_ids) >= 2:
         try:
             clf = SVC(kernel="linear", probability=True, class_weight='balanced')
@@ -193,22 +205,10 @@ def get_trained_model():
             st.error(f"Training failed: {e}")
             return None
     
-    # IMPORTANT: Returning a dictionary containing model and training data
-    return {
-        'clf': clf, 
-        'X': X, 
-        'y': y, 
-        'unique_ids': unique_ids
-    }
-
-def train_classifier():
-    """Clear cache and re-train the model."""
-    st.cache_resource.clear()
-    model_data = get_trained_model()
-    return bool(model_data)
+    return {'clf': clf, 'X': X, 'y': y, 'unique_ids': unique_ids}
 
 def predict_attendance(class_image_np):
-    """Match detected faces against the trained database using SVM and Euclidean distance."""
+    """Match faces using SVM and Distance threshold."""
     encodings = get_face_embeddings(class_image_np)
     detected_students = {}
     model_data = get_trained_model()
@@ -234,8 +234,7 @@ def predict_attendance(class_image_np):
             # Case 2: Single student in database
             predicted_id = int(all_student_ids[0])
 
-        # Verification Step: Calculate Euclidean Distance from original embedding
-        # This prevents 'False Positives' (wrongly identifying someone)
+        # Verification using Euclidean distance
         match_idx = y_train.index(predicted_id)
         trained_embedding = X_train[match_idx]
         
@@ -245,4 +244,4 @@ def predict_attendance(class_image_np):
         if distance <= resemblance_threshold:
             detected_students[predicted_id] = True
 
-    return detected_students, all_student_ids, len(encodings), "Attendance processed successfully."
+    return detected_students, all_student_ids, len(encodings), "Success"
