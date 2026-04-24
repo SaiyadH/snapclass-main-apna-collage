@@ -45,9 +45,6 @@ def teacher_screen():
 
 def teacher_dashboard():
 
-    if 'current_teacher_tab' not in st.session_state:
-        st.session_state.current_teacher_tab = 'take_attendance'
-
     
 
     # Error Fix: Data access safety
@@ -59,21 +56,33 @@ def teacher_dashboard():
     with c1:
         header_dashboard()  
     with c2:
-        # TUPLE ERROR FIX: Agar dictionary hai toh ['name'], agar tuple hai toh [1]
-        try:
-            name = teacher_data['name']
-        except TypeError:
-            name = teacher_data[1] # Database row tuple index 1
-            
-        st.subheader(f"Welcome , {name}!")
 
-        if st.button("Logout", type="secondary", key="login_back"):
+        st.subheader(f"Welcome, {teacher_data[1]}!")
+
+        if st.button("Logout", type="secondary", key="login_back", shortcut="ctrl+b"):
             st.session_state['is_logged_in'] = False
-            if 'teacher_data' in st.session_state:
-                del st.session_state.teacher_data
+            del st.session_state.teacher_data
             st.rerun()
 
-    st.write("") # st.space() agar custom function nahi hai toh st.write use karein
+        # TUPLE ERROR FIX: Agar dictionary hai toh ['name'], agar tuple hai toh [1]
+
+        # try:
+        #     name = teacher_data['name']
+        # except TypeError:
+        #     name = teacher_data[1] # Database row tuple index 1
+            
+        # st.subheader(f"Welcome , {name}!")
+
+        # if st.button("Logout", type="secondary", key="login_back"):
+        #     st.session_state['is_logged_in'] = False
+        #     if 'teacher_data' in st.session_state:
+        #         del st.session_state.teacher_data
+        #     st.rerun()
+
+        #     st.space()
+
+    if 'current_teacher_tab' not in st.session_state:
+        st.session_state.current_teacher_tab = 'take_attendance'        
 
     # Tabs selection UI
     tab1, tab2, tab3 = st.columns(3)    
@@ -86,7 +95,7 @@ def teacher_dashboard():
 
     with tab2:
         type2 = 'primary' if st.session_state.current_teacher_tab == 'manage_subject' else 'tertiary'
-        if st.button('Manage Subjects', type=type2, width='stretch'):
+        if st.button('Manage Subject', type=type2, width='stretch'):
             st.session_state.current_teacher_tab = 'manage_subject'
             st.rerun()
 
@@ -166,12 +175,16 @@ def teacher_dashboard():
 def teacher_tab_take_attendance():
     st.header('Take AI Attendance')
 
+
+# def teacher_tab_manage_subjects():
+#     st.header('Take AI  Manage Subject')
+
 def teacher_tab_manage_subjects():
     teacher_id = st.session_state.teacher_data['teacher_id']
     col1, col2 = st.columns(2)
 
     with col1:
-        st.header('manage Subject', width='stretch')
+        st.header('manage Subject')
 
     with col2:
         if st.button('Create New Subject', width='stretch'):
@@ -209,6 +222,8 @@ def teacher_tab_manage_subjects():
 def teacher_tab_attendance_record():
     st.header('attendance Record')
 
+
+
 def login_teacher(username, password):
     if not username or not password:
         return False, "Please enter both username and password."
@@ -223,20 +238,6 @@ def login_teacher(username, password):
     
     return False, "Invalid username or password."
 
-# def login_teacher(username, password):
-#     if not username or not password:
-#         return False
-    
-#     teacher = teacher_login(username, password)
-#     if teacher:
-#         st.session_state.teacher_data = teacher  # Store teacher data in session state
-#         st.session_state.is_teacher_logged_in = True
-#         st.session_state.user_role = 'teacher'
-#         return True
-    
-
-    
-#     return False
 
 
 def teacher_screen_login():

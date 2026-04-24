@@ -84,8 +84,8 @@
                 
 #              button {
 #                 border-radius: 1.5rem !important;
-#                 background: #5865F2 !important;
-#                 color: white !important;
+#                 background-color: #5865F2 !important;
+#                 color: black !important;
 #                 border: none !important;
 #                 padding: 10px 20px !important;
 #                 transition: transform 0.2s ease-in-out !important;
@@ -94,8 +94,8 @@
                 
 #             button[kind="secondary"] {
 #                 border-radius: 1.5rem !important;
-#                 background: #EB459E !important;
-#                 color: white !important;
+#                 background-color: #EB459E !important;
+#                 color: black !important;
 #                 border: none !important;
 #                 padding: 10px 20px !important;
 #                 transition: transform 0.2s ease-in-out !important;
@@ -103,8 +103,8 @@
                 
 #             button[kind="ternsary"] {
 #                 border-radius: 1.5rem !important;
-#                 background: black !important;
-#                 color: white !important;
+#                 background-color: white !important;
+#                 color: black !important;
 #                 border: none !important;
 #                 padding: 10px 20px !important;
 #                 transition: transform 0.2s ease-in-out !important;
