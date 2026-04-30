@@ -24,7 +24,7 @@ def share_subject_dialog(sub_name, sub_code):
 
 
 
-    app_domain = "APNACLASS-main.streamlit.app"  # Aapka deployed app ka domain
+    app_domain = "ApnaClass-main.streamlit.app"  # Aapka deployed app ka domain
     join_url = f"{app_domain}/join?code={sub_code}"
 
     st.header(f'Scan to Join {sub_name}')
