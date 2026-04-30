@@ -1,12 +1,11 @@
 import streamlit as st
 
-# 1. YE LINE SABSE UPAR HONI CHAHIYE (No Exception!)
 st.set_page_config(
-    page_title="Apna Class",
-    page_icon="🎓",
-    layout="wide", # Isse aapka dashboard poori screen par failega
-    initial_sidebar_state="collapsed"
-)
+        page_title='APNA CLASS',
+        page_icon='https://i.pinimg.com/736x/32/0d/9f/320d9f991e417508dc9ef46113664b03.jpg',
+        layout='wide',
+        initial_sidebar_state='collapsed'
+    )
 
 # Imports ko hamesha set_page_config ke niche rakhein
 from src.screen.teacher_screen import teacher_screen
@@ -16,10 +15,7 @@ from src.screen.home_screen import home_screen
 
 def main():
 
-    st.set_page_config(
-        page_title='APNA CLASS',
-        page_icon='https://i.pinimg.com/736x/32/0d/9f/320d9f991e417508dc9ef46113664b03.jpg',
-    )
+    
 
     # Session state initialization
     if 'login_type' not in st.session_state:
@@ -34,6 +30,6 @@ def main():
         case _: # 'case None' ki jagah default case use karna behtar hai
             home_screen()
 
-# if __name__ == "__main__":
-main()
+if __name__ == "__main__":
+    main()
     
