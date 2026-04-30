@@ -1,24 +1,3 @@
-# import streamlit as st
-
-# from src.screen.teacher_screen import teacher_screen
-# from src.screen.student_screen import student_screen
-# from src.screen.home_screen import home_screen
-
-
-# def main():
-#     if 'login_type' not in st.session_state:
-#         st.session_state['login_type'] = None
-
-#     match st.session_state['login_type']:
-#         case 'Teacher':
-#             teacher_screen()
-#         case 'Student':
-#             student_screen()
-#         case None:
-#             home_screen()
-
-# main()
-
 import streamlit as st
 
 # 1. YE LINE SABSE UPAR HONI CHAHIYE (No Exception!)
@@ -36,6 +15,12 @@ from src.screen.home_screen import home_screen
 
 
 def main():
+
+    st.set_page_config(
+        page_title='APNA CLASS',
+        page_icon='https://i.pinimg.com/736x/32/0d/9f/320d9f991e417508dc9ef46113664b03.jpg',
+    )
+
     # Session state initialization
     if 'login_type' not in st.session_state:
         st.session_state['login_type'] = None
