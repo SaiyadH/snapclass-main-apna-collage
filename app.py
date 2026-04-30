@@ -34,6 +34,6 @@ def main():
         case _: # 'case None' ki jagah default case use karna behtar hai
             home_screen()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+main()
     

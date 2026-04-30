@@ -17,7 +17,16 @@ from src.components.subject_card import subject_card
 def student_dashboard():
 
 
-    student_data = st.session_state.get('student_data')
+    # student_data = st.session_state.get('student_data')
+    # Safe Student Data Retrieval
+    student_info = st.session_state.get('student_data')
+    
+    # Agar data list/tuple mein aa raha hai toh [1] index lein, warna direct use karein
+    if isinstance(student_info, (list, tuple)):
+        student_data = student_info[1]
+    else:
+        student_data = student_info
+        
     student_id = student_data['student_id']
 
     # if student_data:
@@ -67,7 +76,7 @@ def student_dashboard():
 
         stats_map[sid]['total'] += 1
 
-        if logs.get('is_present'):
+        if log.get('is_present'):
             stats_map[sid]['attended'] += 1
 
 
