@@ -114,6 +114,8 @@ def style_base_layout():
                 margin-bottom: 0rem !important;
                 color: black !important;
             }
+                
+            
 
             /* Standard Text */
             h3, h4, p{
