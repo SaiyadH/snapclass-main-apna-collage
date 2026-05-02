@@ -53,10 +53,7 @@ def create_subject(subject_code, name, section, teacher_id):
     except Exception as e:
         st.error(f"Database Error: {e}")
         return None
-# def create_subject(subject_code, name, section, teacher_id):
-#     data = {"subject_code": subject_code, "name": name, "section": section, "teacher_id": teacher_id}
-#     response = supabase.table("subjects").insert(data).execute()
-#     return response.data
+
 
 def get_teacher_subjects(teacher_id):
     # Fixed: Query string aur keys ka dhyan rakhein

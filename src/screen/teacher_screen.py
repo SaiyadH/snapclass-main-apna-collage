@@ -38,19 +38,8 @@ def teacher_screen():
 
 def teacher_dashboard():
 
-    
-
     # Error Fix: Data access safety
     teacher_data = st.session_state.teacher_data
-
-    # teacher_data = st.session_state.get('teacher_data')
-
-    # if teacher_data:
-    #     # Ab ye line 100% chalegi kyunki teacher_data ek dictionary hai
-    #     st.subheader(f"Welcome, {teacher_data['name']}", text_alignment='right')
-    
-
-    # st.header(f"Welcome Teacher Dashboard")
 
     c1, c2 = st.columns(2, vertical_alignment="center", gap="xxlarge")
 
@@ -59,29 +48,6 @@ def teacher_dashboard():
 
     with c2:
 
-        # st.markdown(f"""
-        #     <div style="text-align: right;">
-        #         <p style="margin-bottom: 0px; font-size: 1.2rem; font-weight: 600; color: #666;">Welcome,</p>
-        #         <h2 style="margin-top: -10px; font-size: 2.5rem !important;">{teacher_data}</h2>
-        #     </div>
-        # """, unsafe_allow_html=True)
-
-        # sub_col1, sub_col2 = st.columns(2, gap="small")
-        # with sub_col1:
-        #     st.markdown(f"""
-        #         <p style="font-size: 1rem; color: #888;">Use the options below to manage your classes and attendance.</p>
-        #     """, unsafe_allow_html=True)
-
-
-        # with sub_col2:
-        #     if st.button("Logout ⌫", type="secondary", key="logout_btn", use_container_width=True):
-        #         st.session_state.clear()
-        #         st.rerun()
-
-        
-
-
-        # st.subheader(f"Welcome, {teacher_data['name']}")
         st.subheader(f"Welcome, {teacher_data['name']}", text_alignment='right')
 
         if st.button("Logout", type="secondary", key="login_back", shortcut="ctrl+b", width='stretch'):
