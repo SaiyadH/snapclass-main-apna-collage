@@ -15,7 +15,7 @@ def home_screen():
 
     with col1:
         st.header("I'm Student")
-        st.image("https://i.pinimg.com/736x/c5/5a/84/c55a843b1ac7c09f49502d38b7ed0cd3.jpg", width=100) 
+        st.image(r"C:\Users\taiya\Downloads\1B (1).png", width=160) 
 
         if st.button("Login as Student", type="primary",icon=':material/arrow_outward:', icon_position="right"):
             st.session_state['login_type'] = 'Student'
@@ -24,7 +24,7 @@ def home_screen():
 
     with col2:
         st.header("I'm Teacher")
-        st.image("https://i.pinimg.com/736x/45/ba/d2/45bad2ff0901cfbce8b037d63c3764b3.jpg", width=100)
+        st.image(r"C:\Users\taiya\Downloads\Untitled.png", width=160)
 
         if st.button("Login as Teacher", type="primary", icon=':material/arrow_outward:',icon_position="right"):
             st.session_state['login_type'] = 'Teacher'
