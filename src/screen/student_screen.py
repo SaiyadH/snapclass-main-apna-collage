@@ -56,7 +56,7 @@ def student_dashboard():
         st.header("Your Enrolled SUbject")
 
     with c2:
-        if st.button("Enroll in Subject", type='primary', width='stretch'):
+        if st.button("Enroll in Subject", type='primary', width='stretch', key='enroll_main_btn'):
             enroll_dialog()
 
     st.divider()
@@ -89,7 +89,7 @@ def student_dashboard():
         stats = stats_map.get(sid, {"total":0, "attended": 0})
 
         def unenroll_button():
-            if st.button("Unenroll from this course", type='secondary', width='stretch', icon=":material/delete_forever:"):
+            if st.button("Unenroll from this course", type='secondary', width='stretch', icon=":material/delete_forever:", key=f'unenroll_{sid}'):
                 unenroll_student_to_subject(student_id, sid)
                 st.toast(f"Unenroll from {sub['name']} successfully!")
                 st.rerun()
