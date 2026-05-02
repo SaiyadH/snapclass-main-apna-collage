@@ -22,8 +22,8 @@ def create_subject_dialog(teacher_id):
         else:
             st.warning("Please fill all fields")
 
-@st.dialog("Share Subject Code")
-def share_subject_dialog(sub_name, sub_code):
-    st.write(f"Share this code with your students for **{sub_name}**")
-    st.code(sub_code, language="text")
-    st.info("Students can use this code to join your class.")
+# @st.dialog("Share Subject Code")
+# def share_subject_dialog(sub_name, sub_code):
+#     st.write(f"Share this code with your students for **{sub_name}**")
+#     st.code(sub_code, language="text")
+#     st.info("Students can use this code to join your class.")
