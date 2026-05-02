@@ -15,9 +15,9 @@ def home_screen():
 
     with col1:
         st.header("I'm Student")
-        st.image("https://i.ibb.co/CsmQQV6X/mascot-prof.png", width=120) 
+        st.image("https://i.ibb.co/CsmQQV6X/mascot-prof.png", width=145) 
 
-        if st.button("Login as Student", type="primary",icon=':material/arrow_outward:', icon_position="right"):
+        if st.button("Login as Student", type="primary",icon=':material/arrow_outward:', icon_position="right", key="student_login"):
             st.session_state['login_type'] = 'Student'
             st.rerun()
         
@@ -26,7 +26,7 @@ def home_screen():
         st.header("I'm Teacher")
         st.image("https://i.ibb.co/844D9Lrt/mascot-student.png", width=145)
 
-        if st.button("Login as Teacher", type="primary", icon=':material/arrow_outward:',icon_position="right"):
+        if st.button("Login as Teacher", type="primary", icon=':material/arrow_outward:',icon_position="right", key="teacher_login"):
             st.session_state['login_type'] = 'Teacher'
             st.rerun()
         
