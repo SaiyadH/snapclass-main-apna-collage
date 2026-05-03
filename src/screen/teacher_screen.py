@@ -103,6 +103,7 @@ def teacher_tab_take_attendance():
 
     # Safe Teacher ID Retrieval
     teacher_info = st.session_state.get('teacher_data')
+    
     if isinstance(teacher_info, (list, tuple)):
         teacher_id = teacher_info[1]['teacher_id']
     else:
