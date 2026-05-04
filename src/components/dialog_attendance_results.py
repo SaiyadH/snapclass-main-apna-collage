@@ -26,15 +26,13 @@ def show_attendance_results(df, logs):
         # 3. FIX: Button ka naam 'Confirm & Save' kijiye
         if st.button("Confirm & Save", use_container_width=True, type='primary'):
             try:
-                if logs:
                     create_attendance(logs)
                     st.toast("Attendance taken successfully!")
                     st.session_state.attendance_images = []
                     st.session_state.voice_atttendance_results = None
                     time.sleep(1) # Toast dikhne ke liye thoda wait
                     st.rerun()
-                else:
-                    st.error("No data to save!")
+                
             except Exception as e:
                 st.error(f'Sync failed: {e}')
 
